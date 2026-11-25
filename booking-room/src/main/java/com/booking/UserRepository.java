@@ -106,4 +106,23 @@ public class UserRepository {
         }
         return false;
     }
+
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                if(resultSet.next()) {
+                    long id = resultSet.getLong("id");
+                    String name = resultSet.getString("name");
+                    String email_user = resultSet.getString("email");
+
+                    return new User(id, name, email_user);
+                }
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
