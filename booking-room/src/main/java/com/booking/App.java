@@ -20,11 +20,10 @@ public class App {
 
             UserRepository repository = new UserRepository(connection);
 
-            for (User user : repository.getAllUsers()) {
-                System.out.println(user);
-            }
-
+            boolean added = repository.addUser("Alex", "alex@gmail.com");
+            System.out.println("Добавление: " + added);
         } catch (SQLException e) {
+            System.out.println("Ошибка работы с базой данных");
             e.printStackTrace();
         }
     }

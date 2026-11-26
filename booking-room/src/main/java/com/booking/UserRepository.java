@@ -15,7 +15,9 @@ public class UserRepository {
         this.connection = connection;
     }
 
-    public boolean addUser(String name, String email) {
+    public boolean addUser(String name, String email) throws SQLException {
+        UserValidator.validateName(name);
+        UserValidator.validateEmail(email);
         String sql = "INSERT INTO users (name, email) VALUES (?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -26,14 +28,10 @@ public class UserRepository {
             int rows = statement.executeUpdate();
 
             return rows > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
 
@@ -47,13 +45,11 @@ public class UserRepository {
                 User user = new User(id, name, email);
                 users.add(user);
             }
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
+        } 
         return users;
     }
 
-    public User getUserById(long id) {
+    public User getUserById(long id) throws SQLException {
     String sql = "SELECT * FROM users WHERE id = ?";
 
     try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -69,45 +65,37 @@ public class UserRepository {
             }
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
+    } 
         return null;
     }
 
-    public boolean updateUser(long id, String name, String email) {
-    String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+    public boolean updateUser(long id, String name, String email) throws SQLException {
+        UserValidator.validateName(name);
+        UserValidator.validateEmail(email);
+        String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
 
-    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        statement.setString(1, name);
-        statement.setString(2, email);
-        statement.setLong(3, id);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, name);
+            statement.setString(2, email);
+            statement.setLong(3, id);
 
-        int rows = statement.executeUpdate();
+            int rows = statement.executeUpdate();
 
-        return rows > 0;
+            return rows > 0;
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        } 
     }
 
-    return false;
-    }
-
-    public boolean deleteUser(long id) {
+    public boolean deleteUser(long id) throws SQLException {
         String sql = "DELETE FROM users WHERE id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             int row = statement.executeUpdate();
             return row > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+        } 
     }
 
-    public User getUserByEmail(String email) {
+    public User getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, email);
@@ -120,9 +108,7 @@ public class UserRepository {
                     return new User(id, name, email_user);
                 }
             }
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
+        } 
         return null;
     }
 }
