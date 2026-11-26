@@ -4,10 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
+        logger.info("Приложение запущено");
+        logger.debug("Проверка");
+        logger.warn("Проверка предов");
+        logger.error("Проверка ошибок");
 
         String url = dotenv.get("DB_URL");
         String username = dotenv.get("DB_USERNAME");
@@ -23,8 +30,8 @@ public class App {
             boolean added = repository.addUser("Alex", "alex@gmail.com");
             System.out.println("Добавление: " + added);
         } catch (SQLException e) {
-            System.out.println("Ошибка работы с базой данных");
-            e.printStackTrace();
+            System.out.println("Не удалось выполнить операцию");
+            logger.error("Ошибка при работе с базой данных", e);
         }
     }
 }

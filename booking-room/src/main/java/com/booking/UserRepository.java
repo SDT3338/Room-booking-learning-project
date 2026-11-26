@@ -6,10 +6,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.ResultSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserRepository {
 
     private Connection connection;
+    private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
     public UserRepository(Connection connection) {
         this.connection = connection;
@@ -26,6 +29,8 @@ public class UserRepository {
             statement.setString(2, email);
 
             int rows = statement.executeUpdate();
+
+            logger.info("Добавление в базу данных произошло успешно: {}", email);
 
             return rows > 0;
         }
